@@ -1,5 +1,3 @@
-# astrocore/segmentation.py
-
 import numpy as np
 
 
@@ -9,18 +7,33 @@ class TimeSeriesSegmentation:
 
     Parameters
     ----------
-    gap_factor : float, optional
+    cadence_gap_tolerance : float, optional
         A gap is declared when the time difference between two
         consecutive points exceeds:
 
-            gap_factor * median_cadence
+            cadence_gap_tolerance * median_cadence
 
         Default is 5.
     """
 
-    def __init__(self, gap_factor=5):
+    def __init__(self, cadence_gap_tolerance=1.0):
+        """
+        Parameters
+        ----------
+        cadence_gap_tolerance : float, default=1.0
+            A new segment begins whenever
 
-        self.gap_factor = gap_factor
+                Δt > cadence_gap_tolerance × median_cadence
+
+            cadence_gap_tolerance=1.0
+                Every interval larger than the median cadence is
+                treated as a gap.
+
+            cadence_gap_tolerance>1.0
+                Allows small missing cadences before splitting.
+        """
+
+        self.cadence_gap_tolerance = cadence_gap_tolerance
 
     def run(self, lightcurve):
         """
@@ -58,7 +71,7 @@ class TimeSeriesSegmentation:
         median_cadence = np.median(dt)
 
         gap_indices = np.where(
-            dt > self.gap_factor * median_cadence
+            dt > self.cadence_gap_tolerance * median_cadence
         )[0]
 
         boundaries = np.concatenate(
