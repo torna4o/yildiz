@@ -21,6 +21,14 @@ astrocore/
 │       ├── local.py
 │       ├── registry.py
 │       └── remote.py
+│   └── analysis/
+│       ├── component_analysis.py
+│       ├── w_correlation.py
+│   └── preprocessors/
+│       ├── ssa.py
+│       ├── fft.py
+│   └── utils/
+│       ├── performance.py
 ├── tests/
 │   └── ...
 ├── LICENSE
