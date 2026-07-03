@@ -3,13 +3,13 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from astrocore.io.registry import Registry
-from astrocore.io.local import LocalFITS
+from yildiz.io.registry import Registry
+from yildiz.io.local import LocalFITS
 
-from astrocore.segmentation import TimeSeriesSegmentation
-from astrocore.preprocessors.ssa import SSA
-from astrocore.analysis.component_analysis import ComponentAnalyzer
-from astrocore.analysis.w_correlation import WCorrelation
+from yildiz.segmentation import TimeSeriesSegmentation
+from yildiz.preprocessors.ssa import SSA
+from yildiz.analysis.component_analysis import ComponentAnalyzer
+from yildiz.analysis.w_correlation import WCorrelation
 
 # ============================================================
 # 1. LOAD FROM REGISTRY
