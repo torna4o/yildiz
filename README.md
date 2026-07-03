@@ -1,4 +1,4 @@
-# astrocore
+# Yildiz
 
 A modular framework for **astrophysics time-series data ingestion, preprocessing, and model orchestration**.
 
@@ -9,8 +9,8 @@ The goal is to build a reproducible system that:
 - enables consistent experimentation and analysis
 
 ```
-astrocore/
-├── astrocore/
+yildiz/
+├── yildiz/
 │   ├── __init__.py
 │   ├── module.py
 │   ├── pipeline.py
@@ -38,11 +38,9 @@ astrocore/
 ## Design Principles
 
 - **Modularity**: every component is isolated and reusable  
-- **Determinism**: same input → same output  
-- **Interface-first**: components follow strict contracts  
 - **Separation of concerns**:
   - `io/` handles external data
-  - `astrocore/` handles processing and orchestration  
+  - `yildiz/` handles processing and orchestration  
 
 ---
 
@@ -52,14 +50,15 @@ astrocore/
 - Pipeline execution system  
 - Initial data ingestion layer (`io/`)
 - Preparing the data for preprocessing methods (separating into continuous chunks, etc.)
+- FFT, SSA preprocessing after segmentation to continuous chunks
 
 ---
 
 ## Example (conceptual)
 
 ```python
-from astrocore.io.registry import Registry # Dataset pointers/reference to access local database
-from astrocore.io.local import LocalFITS
+from yildiz.io.registry import Registry # Dataset pointers/reference to access local database
+from yildiz.io.local import LocalFITS
 
 import matplotlib.pyplot as plt
 
