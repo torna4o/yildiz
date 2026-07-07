@@ -13,23 +13,23 @@ class TimeSeriesSegmentation:
 
             cadence_gap_tolerance * median_cadence
 
-        Default is 1 (no gap tolerance).
+        Default is 1.05 (no gap tolerance).
     """
 
-    def __init__(self, cadence_gap_tolerance=1.0):
+    def __init__(self, cadence_gap_tolerance=1.05):
         """
         Parameters
         ----------
-        cadence_gap_tolerance : float, default=1.0
+        cadence_gap_tolerance : float, default=1.05
             A new segment begins whenever
 
                 Δt > cadence_gap_tolerance × median_cadence
 
-            cadence_gap_tolerance=1.0
+            cadence_gap_tolerance=1.05
                 Every interval larger than the median cadence is
                 treated as a gap.
 
-            cadence_gap_tolerance>1.0
+            cadence_gap_tolerance>1.05
                 Allows small missing cadences before splitting.
         """
 
