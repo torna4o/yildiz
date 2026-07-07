@@ -14,6 +14,7 @@ yildiz/
 │   ├── __init__.py
 │   ├── module.py
 │   ├── pipeline.py
+│   ├── preprocessing.py
 |   ├── segmentation.py
 │   └── io/
 │       ├── __init__.py
@@ -22,11 +23,18 @@ yildiz/
 │       ├── registry.py
 │       └── remote.py
 │   └── analysis/
+|       ├── comparison.py
 │       ├── component_analysis.py
 │       ├── w_correlation.py
 │   └── preprocessors/
+|       ├── prewhitening.py
 │       ├── ssa.py
 │       ├── fft.py
+|   └── results/
+|       ├── __init__.py
+|       ├── prewhitening_result.py
+|       ├── fft_result.py
+|       ├── ssa_result.py
 │   └── utils/
 │       ├── performance.py
 ├── tests/
