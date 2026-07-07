@@ -4,25 +4,61 @@ import numpy as np
 from astropy.io import fits
 
 
-class LocalCSV(DataSource):
+class LocalASCII(DataSource):
+    """
+    Load an ASCII text table.
+
+    Supports:
+    - whitespace-separated columns (spaces or tabs)
+    - comma-separated values (CSV)
+    - missing values (returned as NaN)
+
+    The first column is interpreted as time and the second as observations.
+    """
 
     def __init__(self, path):
         self.path = path
 
-    def load(self):
+    def load(
+        self,
+        header_lines=0,
+        delimiter=None,
+    ):
+        """
+        Parameters
+        ----------
+        header_lines : int, optional
+            Number of header lines to skip.
 
-        data = np.loadtxt(
+        delimiter : str or None, optional
+            Column delimiter.
+
+            None  -> arbitrary whitespace (recommended)
+            ","   -> CSV
+            "\t"  -> tab-separated
+            ";"   -> semicolon-separated
+        """
+
+        data = np.genfromtxt(
             self.path,
-            delimiter=","
+            delimiter=delimiter,
+            skip_header=header_lines,
+            dtype=float,
+            filling_values=np.nan,
+            invalid_raise=False,
         )
+
+        # Remove completely empty rows
+        data = data[~np.all(np.isnan(data), axis=1)]
 
         return {
             "t": data[:, 0],
             "y": data[:, 1],
             "meta": {
-                "source": "local_csv",
-                "path": self.path
-            }
+                "source": "local_ascii",
+                "path": self.path,
+                "delimiter": delimiter,
+            },
         }
 
 class LocalFITS(DataSource):
