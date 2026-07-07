@@ -3,6 +3,7 @@ import psutil
 import os
 from functools import wraps
 
+from dataclasses import is_dataclass, replace
 
 def measure_performance(func):
 
@@ -27,19 +28,27 @@ def measure_performance(func):
         }
 
         # ----------------------------------------------------
-        # SAFE ATTACHMENT LOGIC (DICT OR OBJECT)
+        # SAFE ATTACHMENT LOGIC (DICT OR DATACLASS)
         # ----------------------------------------------------
 
         if isinstance(result, dict):
             result.setdefault("meta", {})
             result["meta"].update(meta)
 
-        else:
-            # dataclass or object
-            if hasattr(result, "metadata"):
-                result.metadata["performance"] = meta
-            else:
-                result.performance = meta
+        elif (
+            is_dataclass(result)
+            and hasattr(result, "performance")
+        ):
+            result = replace(
+                result,
+                performance=meta
+            )
+
+        elif hasattr(result, "metadata"):
+            result.metadata["performance"] = meta
+
+        elif hasattr(result, "performance"):
+            result.performance = meta
 
         return result
 
