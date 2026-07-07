@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import numpy as np
 
-from astrocore.preprocessors.fft import FFT
-from astrocore.preprocessors.ssa import SSAResult
+from yildiz.preprocessors.fft import FFT
+from yildiz.preprocessors.ssa import SSAResult
 
 
 class ComponentAnalyzer:
