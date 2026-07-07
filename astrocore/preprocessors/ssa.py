@@ -4,9 +4,9 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-from astrocore.preprocessing import Preprocessor
-from astrocore.preprocessors.fft import FFT
-from astrocore.utils.performance import measure_performance
+from yildiz.preprocessing import Preprocessor
+from yildiz.preprocessors.fft import FFT
+from yildiz.utils.performance import measure_performance
 
 
 # ============================================================
