@@ -1,20 +1,16 @@
 import numpy as np
-from astrocore.preprocessing import Preprocessor
-from astrocore.utils.performance import measure_performance
+from yildiz.preprocessing import Preprocessor
+from yildiz.results.fft_resul import FFTResult
+from yildiz.utils.performance import measure_performance
 
 
 class FFT(Preprocessor):
     """
     FFT spectral decomposition.
 
-    KEY CONCEPTS (read these if unclear):
-    - Power spectrum: https://en.wikipedia.org/wiki/Spectral_density
-    - Signal energy (DSP): https://en.wikipedia.org/wiki/Parseval%27s_theorem
-    - Period-frequency relation: https://en.wikipedia.org/wiki/Frequency
-
-    NOTE:
-    In this context, "energy" = squared magnitude of Fourier coefficients,
-    not physical energy unless the signal is calibrated.
+    Notes
+    -----
+    This implementation assumes uniformly sampled data.
     """
 
     def __init__(self, detrend=True, remove_dc=True):
@@ -24,46 +20,47 @@ class FFT(Preprocessor):
     @measure_performance
     def run(self, lightcurve):
 
-        t = lightcurve["t"]
-        y = lightcurve["y"]
+        time = np.asarray(lightcurve["t"], dtype=float)
+        observations = np.asarray(lightcurve["y"], dtype=float)
 
-        if len(t) < 2:
+        if len(time) < 2:
             raise ValueError("Time series too short for FFT.")
 
-        dt = np.median(np.diff(t))
-
-        y = np.asarray(y)
+        sampling_interval = np.median(np.diff(time))
+        sampling_frequency = 1.0 / sampling_interval
+        nyquist_frequency = sampling_frequency / 2.0
 
         if self.detrend:
-            y = y - np.nanmean(y)
+            observations = observations - np.nanmean(observations)
 
-        freq = np.fft.rfftfreq(len(y), d=dt)
-        fft_vals = np.fft.rfft(y)
+        frequencies = np.fft.rfftfreq(
+            len(observations),
+            d=sampling_interval,
+        )
 
-        power = np.abs(fft_vals) ** 2
+        fft = np.fft.rfft(observations)
+
+        amplitudes = np.abs(fft)
+        phases = np.angle(fft)
+        power = amplitudes ** 2
 
         if self.remove_dc:
-            mask = freq > 0
-        else:
-            mask = np.ones_like(freq, dtype=bool)
+            mask = frequencies > 0.0
 
-        freq = freq[mask]
-        power = power[mask]
+            frequencies = frequencies[mask]
+            fft = fft[mask]
+            amplitudes = amplitudes[mask]
+            phases = phases[mask]
+            power = power[mask]
 
-        period = 1.0 / freq
-        omega = 2.0 * np.pi * freq
-
-        return {
-            "frequency": freq,
-            "period": period,
-            "angular_frequency": omega,
-            "power": power,
-
-            "meta": {
-                "method": "FFT",
-                "cadence": dt,
-                "n_points": len(y),
-                "detrend": self.detrend,
-                "remove_dc": self.remove_dc
-            }
-        }
+        return FFTResult(
+            time=time,
+            observations=observations,
+            frequencies=frequencies,
+            amplitudes=amplitudes,
+            phases=phases,
+            fft=fft,
+            sampling_interval=sampling_interval,
+            sampling_frequency=sampling_frequency,
+            nyquist_frequency=nyquist_frequency,
+        )
