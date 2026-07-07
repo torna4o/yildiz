@@ -111,3 +111,5 @@ plt.show()
 
 This repository is under active development.
 Structure, naming, and interfaces are expected to evolve.
+
+* Yildiz means "star" in Turkish.
